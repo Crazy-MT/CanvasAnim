@@ -56,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
     private void prepareVisualizer() {
         mVisualizer = new Visualizer(mMediaPlayer.getAudioSessionId());
         mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[0]);
+        mVisualizer.setScalingMode(Visualizer.SCALING_MODE_NORMALIZED);
+//        mVisualizer.setMeasurementMode(Visualizer.MEASUREMENT_MODE_PEAK_RMS);
+
         mVisualizer.setDataCaptureListener(
                 new Visualizer.OnDataCaptureListener() {
                     public void onWaveFormDataCapture(Visualizer visualizer,
@@ -78,9 +81,9 @@ public class MainActivity extends AppCompatActivity {
                         for (int b : bytes){
 //                            Log.e(TAG, "onWaveFormDataCapture: " + b);
                         }
-
-//                        Log.e(TAG, "onWaveFormDataCapture: " + mFPS + "  " + bytes.length );
-
+                        // 128 , 每秒 2 次采样，长度 128
+                        //Log.e(TAG, "onWaveFormDataCapture: " + mFPS + "  " + bytes.length  );
+                        
                         mDrawView.setBytes(bytes);
                     }
 

@@ -16,22 +16,24 @@ public class Rectangle extends View {
     private static final int ALPHA = 255;
 
     // 原始位置
-    private int mStartX = 0;
-    private int mStartY = 0;
+    private float mStartX = 0;
+    private float mStartY = 0;
 
     // 终点位置
-    private int mEndX = 0;
-    private int mEndY = 0;
+    private float mEndX = 0;
+    private float mEndY = 0;
 
     // 长度
     private int mLength = 100;
 
     // 运动速度
-    private int mSpeedX = 3;
-    private int mSpeedY = 3;
+    private float mSpeedX = 3;
+    private float mSpeedY = 3;
 
     // 旋转速度
-    private float mDegreeSpeed = 5;
+    private float mDegreeSpeed = 1;
+
+
 
     // 角度
     private float mDegree = 0;
@@ -74,7 +76,7 @@ public class Rectangle extends View {
         moveTo(mSpeedX, mSpeedY, mDegreeSpeed);
     }
 
-    private void moveTo(int goX, int goY, float degree) {
+    private void moveTo(float goX, float goY, float degree) {
 
         if (mEndX > mDrawView.width || mStartX > mDrawView.width ) {
             goRight = false;
@@ -133,7 +135,7 @@ public class Rectangle extends View {
         mPaint.setARGB(a, r, g, b);
     }
 
-    public void setX(int newValue) {
+    public void setX(float newValue) {
         mStartX = newValue;
     }
 
@@ -141,7 +143,7 @@ public class Rectangle extends View {
         return mStartX;
     }
 
-    public void setY(int newValue) {
+    public void setY(float newValue) {
         mStartY = newValue;
     }
 
@@ -149,19 +151,19 @@ public class Rectangle extends View {
         return mStartY;
     }
 
-    public int getSpeedX() {
+    public float getSpeedX() {
         return mSpeedX;
     }
 
-    public void setSpeedX(int speedX) {
+    public void setSpeedX(float speedX) {
         mSpeedX = speedX;
     }
 
-    public int getmSpeedY() {
+    public float getmSpeedY() {
         return mSpeedY;
     }
 
-    public void setSpeedY(int speedY) {
+    public void setSpeedY(float speedY) {
         mSpeedY = speedY;
     }
 

@@ -21,14 +21,17 @@ public class DrawView extends View {
     public int width;
     public int height;
     private boolean isRunning;
+    private float mAverage = 0;
 
     private Context mContext;
 
     private byte[] mBytes;
-    private int[] mMusicByte = new int[]{};
+
+    private int max = 0, min = 0;
 
     private Paint mPaint;
     private int test = 0;
+
     public DrawView(Context context) {
         this(context, null);
     }
@@ -52,13 +55,13 @@ public class DrawView extends View {
         width = getMeasuredWidth();
         height = getMeasuredHeight();
 
-        mRectangle1 = createF(mContext, 0, 0, 3, 3, 200);
+        mRectangle1 = createF(mContext, 300, 300, 7, 7, 200);
         mRectangle2 = createF(mContext, 0, 0, 1, 1, 200);
         mRectangle3 = createF(mContext, 0, 200, 5, 1, 200);
 
-        mRectangle1.setARGB(255,121,121,121);
-        mRectangle2.setARGB(255,121,121,121);
-        mRectangle3.setARGB(255,121,121,121);
+        mRectangle1.setARGB(255, 121, 121, 121);
+        mRectangle2.setARGB(255, 121, 121, 121);
+        mRectangle3.setARGB(255, 121, 121, 121);
         mRectangle1.setDegree(30);
         mRectangle2.setDegree(10);
         mRectangle3.setDegree(60);
@@ -73,26 +76,46 @@ public class DrawView extends View {
 
         if (mBytes == null)
             return;
-
-        mMusicByte = new int[mBytes.length / 2];
-        for (int i = 0; i < mBytes.length / 2; i++) {
-            byte rfk = mBytes[2 * i];
+        /*max = 0;
+        min = 0;*/
+        test = 0;
+        // 每秒 2 次， 每次 128 个数据取相隔两个数据，做运算，存到 64 个数据的数组
+        for (int i = 0; i < mBytes.length ; i++) {
+            /*byte rfk = mBytes[2 * i];
             byte ifk = mBytes[2 * i + 1];
             float magnitude = (rfk * rfk + ifk * ifk);
-            int dbValue = (int) (10 * Math.log10(magnitude));
-            mMusicByte[i] = (dbValue * 2 - 10); 
+            int dbValue = (int) (10 * Math.log10(magnitude));*/
+////            mMusicByte[i] = (dbValue * 2 - 10);
+            max = max > Math.abs(mBytes[i]) ? max : Math.abs(mBytes[i]);
+            min = min < Math.abs(mBytes[i]) ? min : Math.abs(mBytes[i]);
+//            max = max > mBytes[i] ? max : mBytes[i];
+//            min = min < mBytes[i] ? min : mBytes[i];
         }
-        Log.e(TAG, "setBytes: **************************************************" );
 
-        test = 0;
-       /* int all = 0;
+
+        Log.e(TAG, "setBytes: **************************************************");
+
+
+        /*int sum = 0;
+        for (int i = 0; i < mBytes.length; i++) {
+            sum += Math.abs(mBytes[i]);
+            Log.e(TAG, "calculateDecibel: " + buf[i]);
+        }
+        // avg 10-50
+        return sum / mBufSize;*/
+
+        int all = 0;
+        for (int b : mBytes){
+            all += Math.abs(b);
+        }
+        mAverage = all/mBytes.length;
+//        Log.e(TAG, "setBytes: " + all / mBytes.length);
+        all = 0;
         for (int b : mBytes){
             all += b;
         }
-
-        mMusicByte = all / mBytes.length;
-        Log.e(TAG, "setBytes: " + mMusicByte);
-*/
+        mAverage = all/mBytes.length;
+//        Log.e(TAG, "setBytes: " + all / mBytes.length);
         invalidate();
     }
 
@@ -112,21 +135,30 @@ public class DrawView extends View {
     protected void onDraw(Canvas canvas) {
 
 
-
-        if (mBytes == null){
+        if (mBytes == null) {
             return;
         }
         test++;
-        int change = 0;
+       /* int change = 0;
+        //  每次 64 个数据，取两次数据的差值
         if (test > 0 && test < mMusicByte.length) {
-             change = mMusicByte[test] - mMusicByte[test - 1];
+            change = mMusicByte[test] - mMusicByte[test - 1];
         }
 
         Log.e(TAG, "onDraw: " + test + "  " + change);
+*/
+
         if (isRunning) {
             invalidate();
 
 //            mRectangle1.setSpeedX(change);
+            if (test > 0 && test < mBytes.length) {
+                float k = (mAverage - min)/(max - min);
+                float speed = ((50 * k )  );
+                mRectangle1.setSpeedX( speed);
+                mRectangle1.setSpeedY( speed);
+                Log.e(TAG, "onDraw: " + speed + "  " + k + "  " + mAverage);
+            }
             mRectangle1.move();
             mRectangle1.draw(canvas);
             /*mRectangle1.move();
@@ -138,7 +170,6 @@ public class DrawView extends View {
             mRectangle3.move();
             mRectangle3.draw(canvas);*/
         }
-
 
 
         // postInvalidate() 子线程请求调用 onDraw() ，系统自动调用，不允许手动调用。
