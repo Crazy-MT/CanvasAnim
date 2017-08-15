@@ -3,6 +3,7 @@ package com.example.yoush.canvasanim.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -34,7 +35,6 @@ public class Rectangle extends View {
     private float mDegreeSpeed = 1;
 
 
-
     // 角度
     private float mDegree = 0;
 
@@ -52,7 +52,6 @@ public class Rectangle extends View {
         mPaint.setAntiAlias(true);// 消除锯齿
         mPaint.setStrokeWidth(10f);
     }
-
 
 
     @Override
@@ -78,23 +77,36 @@ public class Rectangle extends View {
 
     private void moveTo(float goX, float goY, float degree) {
 
-        if (mEndX > mDrawView.width || mStartX > mDrawView.width ) {
+        int width = (int) (mDrawView.width * 1.2f);
+        int height = (int) (mDrawView.height * 1.2f);
+
+        int x = -(int) (mDrawView.width * 0.1);
+        int y = -(int) (mDrawView.height * 0.1);
+
+        if (mEndX > width || mStartX > width) {
             goRight = false;
+            goX = Math.abs(goX);
         }
-        if (mEndX < 0 || mStartX < 0 ) {
+        if (mEndX < x || mStartX < x) {
             goRight = true;
+            goX = Math.abs(goX);
         }
 
-        if (mEndY > mDrawView.height || mStartY > mDrawView.height) {
+        if (mEndY > height || mStartY > height) {
             goDown = false;
+            goY = Math.abs(goY);
         }
-        if (mEndY < 0 || mStartY < 0) {
+        if (mEndY < y || mStartY < y) {
             goDown = true;
+            goY = Math.abs(goY);
         }
+
 
         mStartX = goRight ? (mStartX + goX) : (mStartX - goX);
         mStartY = goDown ? (mStartY + goY) : (mStartY - goY);
         mDegree = mDegree >= 360 ? mDegree % 360 : mDegree + degree;
+        Log.e(TAG, "moveTo: " + "startX: " + mStartX + "  startY: " + mStartY + " goX: " + goX + " goY: " + goY);
+
     }
 
     /***
@@ -109,7 +121,7 @@ public class Rectangle extends View {
         points[0] = toX;
         points[1] = toY;
 
-        if (angle < 0){
+        if (angle < 0) {
             angle = 360 + angle;
         }
 

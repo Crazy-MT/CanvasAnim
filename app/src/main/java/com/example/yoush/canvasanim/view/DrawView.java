@@ -18,6 +18,9 @@ public class DrawView extends View {
     private Rectangle mRectangle1;
     private Rectangle mRectangle2;
     private Rectangle mRectangle3;
+    private Rectangle mRectangle4;
+    private Rectangle mRectangle5;
+    private Rectangle mRectangle6;
     public int width;
     public int height;
     private boolean isRunning;
@@ -55,16 +58,35 @@ public class DrawView extends View {
         width = getMeasuredWidth();
         height = getMeasuredHeight();
 
-        mRectangle1 = createF(mContext, 300, 300, 7, 7, 200);
-        mRectangle2 = createF(mContext, 0, 0, 1, 1, 200);
-        mRectangle3 = createF(mContext, 0, 200, 5, 1, 200);
+        mRectangle1 = createF(mContext, 800, 800, 7, 7, 200);
+        mRectangle2 = createF(mContext, 500, 500, 1, 1, 200);
+        mRectangle3 = createF(mContext, 200, 200, 5, 1, 200);
+
+        mRectangle4 = createF(mContext, 567, 345, 7, 7, 200);
+        mRectangle5 = createF(mContext, 600, 600, 1, 1, 200);
+        mRectangle6 = createF(mContext, 700, 700, 5, 1, 200);
 
         mRectangle1.setARGB(255, 121, 121, 121);
         mRectangle2.setARGB(255, 121, 121, 121);
         mRectangle3.setARGB(255, 121, 121, 121);
+        mRectangle4.setARGB(255, 121, 121, 121);
+        mRectangle5.setARGB(255, 121, 121, 121);
+        mRectangle6.setARGB(255, 121, 121, 121);
+
         mRectangle1.setDegree(30);
         mRectangle2.setDegree(10);
         mRectangle3.setDegree(60);
+        mRectangle4.setDegree(30);
+        mRectangle5.setDegree(10);
+        mRectangle6.setDegree(60);
+
+
+        mRectangle1.setDegreeSpeed(3);
+        mRectangle2.setDegreeSpeed(-1);
+        mRectangle3.setDegreeSpeed(-2);
+        mRectangle4.setDegreeSpeed(-3);
+        mRectangle5.setDegreeSpeed(-2);
+        mRectangle6.setDegreeSpeed(-1);
     }
 
     public byte[] getBytes() {
@@ -80,7 +102,7 @@ public class DrawView extends View {
         min = 0;*/
         test = 0;
         // 每秒 2 次， 每次 128 个数据取相隔两个数据，做运算，存到 64 个数据的数组
-        for (int i = 0; i < mBytes.length ; i++) {
+        for (int i = 0; i < mBytes.length; i++) {
             /*byte rfk = mBytes[2 * i];
             byte ifk = mBytes[2 * i + 1];
             float magnitude = (rfk * rfk + ifk * ifk);
@@ -105,16 +127,16 @@ public class DrawView extends View {
         return sum / mBufSize;*/
 
         int all = 0;
-        for (int b : mBytes){
+/*        for (int b : mBytes) {
             all += Math.abs(b);
         }
-        mAverage = all/mBytes.length;
+        mAverage = all / mBytes.length;*/
 //        Log.e(TAG, "setBytes: " + all / mBytes.length);
         all = 0;
-        for (int b : mBytes){
+        for (int b : mBytes) {
             all += b;
         }
-        mAverage = all/mBytes.length;
+        mAverage = all / mBytes.length;
 //        Log.e(TAG, "setBytes: " + all / mBytes.length);
         invalidate();
     }
@@ -153,22 +175,50 @@ public class DrawView extends View {
 
 //            mRectangle1.setSpeedX(change);
             if (test > 0 && test < mBytes.length) {
-                float k = (mAverage - min)/(max - min);
-                float speed = ((50 * k )  );
-                mRectangle1.setSpeedX( speed);
-                mRectangle1.setSpeedY( speed);
-                Log.e(TAG, "onDraw: " + speed + "  " + k + "  " + mAverage);
+                float k = Math.abs((mAverage - min) / (max - min));
+                int ratio = Math.random() > 0.5 ? 1 : 1;
+                float speed1 = (ratio * (80 * k));
+                float speed2 = (ratio * (20 * k));
+                float speed3 = (ratio * (40 * k));
+
+                mRectangle1.setSpeedX(speed1);
+                mRectangle1.setSpeedY(speed1);
+//                mRectangle1.setDegreeSpeed(mRectangle1.getDegreeSpeed() * (mAverage/Math.abs(mAverage)));
+
+                mRectangle2.setSpeedX(speed2);
+                mRectangle2.setSpeedY(speed2);
+
+                mRectangle3.setSpeedX(speed3);
+                mRectangle3.setSpeedY(speed3);
+
+
+                mRectangle4.setSpeedX(speed3);
+                mRectangle4.setSpeedY(speed3);
+
+
+                mRectangle5.setSpeedX(speed3);
+                mRectangle5.setSpeedY(speed3);
+
+
+                mRectangle6.setSpeedX(speed3);
+                mRectangle6.setSpeedY(speed3);
+                Log.e(TAG, "onDraw: " + "speed1: " + speed1 + " k: " + k + "  average: " + mAverage + "  min: " + min);
             }
             mRectangle1.move();
             mRectangle1.draw(canvas);
-            /*mRectangle1.move();
-            mRectangle1.draw(canvas);
+
 
             mRectangle2.move();
             mRectangle2.draw(canvas);
 
             mRectangle3.move();
-            mRectangle3.draw(canvas);*/
+            mRectangle3.draw(canvas);
+            mRectangle4.move();
+            mRectangle4.draw(canvas);
+            mRectangle5.move();
+            mRectangle5.draw(canvas);
+            mRectangle6.move();
+            mRectangle6.draw(canvas);
         }
 
 

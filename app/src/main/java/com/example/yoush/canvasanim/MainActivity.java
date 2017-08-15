@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -55,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private void prepareVisualizer() {
         mVisualizer = new Visualizer(mMediaPlayer.getAudioSessionId());
-        mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[0]);
+        mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
         mVisualizer.setScalingMode(Visualizer.SCALING_MODE_NORMALIZED);
 //        mVisualizer.setMeasurementMode(Visualizer.MEASUREMENT_MODE_PEAK_RMS);
 
@@ -70,27 +69,29 @@ public class MainActivity extends AppCompatActivity {
                             Log.e(TAG, "onWaveFormDataCapture: " + b + "  " + min + "  " + max);
                         }*/
 
-                        if (SystemClock.uptimeMillis() - mFPSTime > 1000) {
+                        /*if (SystemClock.uptimeMillis() - mFPSTime > 1000) {
                             mFPSTime = SystemClock.uptimeMillis();
                             mFPS = mFPSCounter;
                             mFPSCounter = 0;
                         } else {
                             mFPSCounter++;
-                        }
+                        }*/
 
+                        // 128 , 每秒 2 次采样，长度 128
+/*
                         for (int b : bytes){
 //                            Log.e(TAG, "onWaveFormDataCapture: " + b);
                         }
-                        // 128 , 每秒 2 次采样，长度 128
+*/
                         //Log.e(TAG, "onWaveFormDataCapture: " + mFPS + "  " + bytes.length  );
-                        
+
                         mDrawView.setBytes(bytes);
                     }
 
                     public void onFftDataCapture(Visualizer visualizer,
                                                  byte[] bytes, int samplingRate) {
                     }
-                }, Visualizer.getMaxCaptureRate() / 10, true, true);
+                }, Visualizer.getMaxCaptureRate() / 2, true, true);
         mVisualizer.setEnabled(true);
     }
 
