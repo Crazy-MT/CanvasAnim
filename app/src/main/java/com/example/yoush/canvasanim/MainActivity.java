@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private void prepareVisualizer() {
         mVisualizer = new Visualizer(mMediaPlayer.getAudioSessionId());
+        //mVisualizer = new Visualizer(0);
         mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
-        mVisualizer.setScalingMode(Visualizer.SCALING_MODE_NORMALIZED);
 //        mVisualizer.setMeasurementMode(Visualizer.MEASUREMENT_MODE_PEAK_RMS);
 
         mVisualizer.setDataCaptureListener(
@@ -85,13 +85,15 @@ public class MainActivity extends AppCompatActivity {
 */
                         //Log.e(TAG, "onWaveFormDataCapture: " + mFPS + "  " + bytes.length  );
 
-                        mDrawView.setBytes(bytes);
+//                        mDrawView.setBytes(bytes);
                     }
 
                     public void onFftDataCapture(Visualizer visualizer,
                                                  byte[] bytes, int samplingRate) {
+
+                        mDrawView.setBytes(bytes);
                     }
-                }, Visualizer.getMaxCaptureRate() / 2, true, true);
+                }, Visualizer.getMaxCaptureRate() / 10 , false, true);
         mVisualizer.setEnabled(true);
     }
 

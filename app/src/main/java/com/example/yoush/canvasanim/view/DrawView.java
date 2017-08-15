@@ -35,6 +35,20 @@ public class DrawView extends View {
     private Paint mPaint;
     private int test = 0;
 
+    private float[] dbmArray = new float[4];
+
+    float[] dbs;
+    /**
+     * Maximum value of dB. Used for controlling wave height percentage.
+     */
+    private static final float MAX_DB_VALUE = 76;
+    private final float[] coefficients = new float[]{
+            80 / 44100f,
+            350 / 44100f,
+            2500 / 44100f,
+            10000 / 44100f,
+    };
+
     public DrawView(Context context) {
         this(context, null);
     }
@@ -58,7 +72,7 @@ public class DrawView extends View {
         width = getMeasuredWidth();
         height = getMeasuredHeight();
 
-        mRectangle1 = createF(mContext, 800, 800, 7, 7, 200);
+        mRectangle1 = createF(mContext, 500, 500, 7, 7, 200);
         mRectangle2 = createF(mContext, 500, 500, 1, 1, 200);
         mRectangle3 = createF(mContext, 200, 200, 5, 1, 200);
 
@@ -96,11 +110,24 @@ public class DrawView extends View {
     public void setBytes(byte[] bytes) {
         mBytes = bytes;
 
+        test++;
+
+        if (test > 6){
+            test = 0;
+            Log.e(TAG, "setBytes: " );
+        }
+        dataReceivedImpl(mBytes, 4);
+
+        invalidate();
+
+        if (true) {
+            return;
+        }
+
         if (mBytes == null)
             return;
         /*max = 0;
         min = 0;*/
-        test = 0;
         // 每秒 2 次， 每次 128 个数据取相隔两个数据，做运算，存到 64 个数据的数组
         for (int i = 0; i < mBytes.length; i++) {
             /*byte rfk = mBytes[2 * i];
@@ -141,6 +168,30 @@ public class DrawView extends View {
         invalidate();
     }
 
+    private void dataReceivedImpl(byte[] bytes, int layersCount) {
+
+
+        // calculate dBs and amplitudes
+        int dataSize = bytes.length / 2 - 1;
+        if (dbs == null || dbs.length != dataSize) {
+            dbs = new float[dataSize];
+        }
+
+        for (int i = 0; i < dataSize; i++) {
+            float re = bytes[2 * i];
+            float im = bytes[2 * i + 1];
+            float sqMag = re * re + im * im;
+            dbs[i] = Utils.magnitudeToDb(sqMag);
+        }
+        for (int i = 0; i < layersCount; i++) {
+            int index = (int) (coefficients[i] * bytes.length);
+            float db = dbs[index];
+            dbmArray[i] = db / MAX_DB_VALUE;
+        }
+
+        Log.e(TAG, "dataReceivedImpl: " + dbmArray[0]);
+    }
+
 
     private Rectangle createF(Context context, int x, int y, int speedX, int speedY, int length) {
         Rectangle mRectangle = new Rectangle(context, this);
@@ -160,7 +211,6 @@ public class DrawView extends View {
         if (mBytes == null) {
             return;
         }
-        test++;
        /* int change = 0;
         //  每次 64 个数据，取两次数据的差值
         if (test > 0 && test < mMusicByte.length) {
@@ -173,19 +223,20 @@ public class DrawView extends View {
         if (isRunning) {
             invalidate();
 
-//            mRectangle1.setSpeedX(change);
-            if (test > 0 && test < mBytes.length) {
-                float k = Math.abs((mAverage - min) / (max - min));
-                int ratio = Math.random() > 0.5 ? 1 : 1;
-                float speed1 = (ratio * (80 * k));
-                float speed2 = (ratio * (20 * k));
-                float speed3 = (ratio * (40 * k));
+/*            float k = Math.abs((mAverage - min) / (max - min));
+            int ratio = Math.random() > 0.5 ? 1 : 1;
+            float speed1 = (ratio * (80 * k));
+            float speed2 = (ratio * (20 * k));
+            float speed3 = (ratio * (40 * k));*/
+            float speed =  dbmArray[0] * 5 + 1;
 
-                mRectangle1.setSpeedX(speed1);
-                mRectangle1.setSpeedY(speed1);
-//                mRectangle1.setDegreeSpeed(mRectangle1.getDegreeSpeed() * (mAverage/Math.abs(mAverage)));
+            speed = test < 3 ? -speed : speed;
 
-                mRectangle2.setSpeedX(speed2);
+            mRectangle1.setDegreeSpeed(3 * (speed / Math.abs(speed)));
+            mRectangle1.setSpeedX(speed);
+            mRectangle1.setSpeedY(speed);
+
+               /* mRectangle2.setSpeedX(speed2);
                 mRectangle2.setSpeedY(speed2);
 
                 mRectangle3.setSpeedX(speed3);
@@ -201,14 +252,14 @@ public class DrawView extends View {
 
 
                 mRectangle6.setSpeedX(speed3);
-                mRectangle6.setSpeedY(speed3);
-                Log.e(TAG, "onDraw: " + "speed1: " + speed1 + " k: " + k + "  average: " + mAverage + "  min: " + min);
-            }
+                mRectangle6.setSpeedY(speed3);*/
+//            Log.e(TAG, "onDraw: " + "speed1: " + speed + "  dbmArray: " + dbmArray[0] + "  test: " + test + "  " + (speed / Math.abs(speed)) +  "  " + mRectangle1.getDegreeSpeed());
+
             mRectangle1.move();
             mRectangle1.draw(canvas);
 
 
-            mRectangle2.move();
+          /*  mRectangle2.move();
             mRectangle2.draw(canvas);
 
             mRectangle3.move();
@@ -218,7 +269,7 @@ public class DrawView extends View {
             mRectangle5.move();
             mRectangle5.draw(canvas);
             mRectangle6.move();
-            mRectangle6.draw(canvas);
+            mRectangle6.draw(canvas);*/
         }
 
 

@@ -45,6 +45,11 @@ public class Rectangle extends View {
     private DrawView mDrawView;
     private Paint mPaint;
 
+
+    private int mFPS = 0;         // the value to show
+    private int mFPSCounter = 0;  // the value to count
+    private long mFPSTime = 0;     // last update time
+
     public Rectangle(Context context, DrawView drawView) {
         super(context);
         mDrawView = drawView;
@@ -68,6 +73,14 @@ public class Rectangle extends View {
         mEndX = (int) point[2];
         mEndY = (int) point[3];
         canvas.drawLine(point[0], point[1], point[2], point[3], mPaint);
+
+       /* if (SystemClock.uptimeMillis() - mFPSTime > 1000) {
+            mFPSTime = SystemClock.uptimeMillis();
+            mFPS = mFPSCounter;
+            mFPSCounter = 0;
+        } else {
+            mFPSCounter++;
+        } */
     }
 
 
@@ -104,8 +117,15 @@ public class Rectangle extends View {
 
         mStartX = goRight ? (mStartX + goX) : (mStartX - goX);
         mStartY = goDown ? (mStartY + goY) : (mStartY - goY);
-        mDegree = mDegree >= 360 ? mDegree % 360 : mDegree + degree;
-        Log.e(TAG, "moveTo: " + "startX: " + mStartX + "  startY: " + mStartY + " goX: " + goX + " goY: " + goY);
+        if (mDegree >= 360){
+            mDegree = 0;
+        }
+        if (mDegree < -360){
+            mDegree = 0;
+        }
+        mDegree = mDegree + degree;
+        Log.e(TAG, "moveTo: " + mDegree + "  " + degree);
+//        Log.e(TAG, "moveTo: " + "startX: " + mStartX + "  startY: " + mStartY + " goX: " + goX + " goY: " + goY);
 
     }
 
@@ -121,11 +141,13 @@ public class Rectangle extends View {
         points[0] = toX;
         points[1] = toY;
 
+//        Log.e(TAG, "calculatePoint: " + angle);
         if (angle < 0) {
             angle = 360 + angle;
+//            Log.e(TAG, "calculatePoint: " + angle);
         }
 
-        if (angle <= 90f) {
+        if (angle <= 90f && angle >= 0) {
             points[2] = (float) Math.sin(angle * Math.PI / 180) * mLength + toX;
             points[3] = -(float) Math.cos(angle * Math.PI / 180) * mLength + toY;
         } else if (angle <= 180f) {
