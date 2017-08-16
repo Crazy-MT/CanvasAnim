@@ -7,6 +7,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import java.util.Random;
+
 
 /**
  * Created by yoush on 2017/8/10.
@@ -48,6 +50,8 @@ public class DrawView extends View {
             2500 / 44100f,
             10000 / 44100f,
     };
+
+    private int mRandomCount = new Random().nextInt(10);
 
     public DrawView(Context context) {
         this(context, null);
@@ -111,60 +115,12 @@ public class DrawView extends View {
         mBytes = bytes;
 
         test++;
-
-        if (test > 6){
+        if (test > mRandomCount){
             test = 0;
-            Log.e(TAG, "setBytes: " );
+            mRandomCount = new Random().nextInt(10);
         }
         dataReceivedImpl(mBytes, 4);
 
-        invalidate();
-
-        if (true) {
-            return;
-        }
-
-        if (mBytes == null)
-            return;
-        /*max = 0;
-        min = 0;*/
-        // 每秒 2 次， 每次 128 个数据取相隔两个数据，做运算，存到 64 个数据的数组
-        for (int i = 0; i < mBytes.length; i++) {
-            /*byte rfk = mBytes[2 * i];
-            byte ifk = mBytes[2 * i + 1];
-            float magnitude = (rfk * rfk + ifk * ifk);
-            int dbValue = (int) (10 * Math.log10(magnitude));*/
-////            mMusicByte[i] = (dbValue * 2 - 10);
-            max = max > Math.abs(mBytes[i]) ? max : Math.abs(mBytes[i]);
-            min = min < Math.abs(mBytes[i]) ? min : Math.abs(mBytes[i]);
-//            max = max > mBytes[i] ? max : mBytes[i];
-//            min = min < mBytes[i] ? min : mBytes[i];
-        }
-
-
-        Log.e(TAG, "setBytes: **************************************************");
-
-
-        /*int sum = 0;
-        for (int i = 0; i < mBytes.length; i++) {
-            sum += Math.abs(mBytes[i]);
-            Log.e(TAG, "calculateDecibel: " + buf[i]);
-        }
-        // avg 10-50
-        return sum / mBufSize;*/
-
-        int all = 0;
-/*        for (int b : mBytes) {
-            all += Math.abs(b);
-        }
-        mAverage = all / mBytes.length;*/
-//        Log.e(TAG, "setBytes: " + all / mBytes.length);
-        all = 0;
-        for (int b : mBytes) {
-            all += b;
-        }
-        mAverage = all / mBytes.length;
-//        Log.e(TAG, "setBytes: " + all / mBytes.length);
         invalidate();
     }
 
@@ -201,6 +157,8 @@ public class DrawView extends View {
         mRectangle.setLength(length);
         mRectangle.setSpeedX(speedX);
         mRectangle.setSpeedY(speedY);
+        mRectangle.setOriginX(x);
+        mRectangle.setOriginY(y);
         return mRectangle;
     }
 
@@ -211,62 +169,57 @@ public class DrawView extends View {
         if (mBytes == null) {
             return;
         }
-       /* int change = 0;
-        //  每次 64 个数据，取两次数据的差值
-        if (test > 0 && test < mMusicByte.length) {
-            change = mMusicByte[test] - mMusicByte[test - 1];
-        }
-
-        Log.e(TAG, "onDraw: " + test + "  " + change);
-*/
 
         if (isRunning) {
             invalidate();
 
-/*            float k = Math.abs((mAverage - min) / (max - min));
-            int ratio = Math.random() > 0.5 ? 1 : 1;
-            float speed1 = (ratio * (80 * k));
-            float speed2 = (ratio * (20 * k));
-            float speed3 = (ratio * (40 * k));*/
-            float speed =  dbmArray[0] * 5 + 1;
+            float speed1 =  dbmArray[0] * 10 + 1;
+            mRectangle1.setSpeedX(speed1);
+            mRectangle1.setSpeedY(speed1);
+            speed1 = test < mRandomCount/2 ? -speed1 : speed1;
+            mRectangle1.setDegreeSpeed(3 * (speed1 / Math.abs(speed1)));
+            mRectangle1.move();
+            mRectangle1.draw(canvas);
+            Log.e(TAG, "onDraw: " + speed1);
 
-            speed = test < 3 ? -speed : speed;
-
-            mRectangle1.setDegreeSpeed(3 * (speed / Math.abs(speed)));
-            mRectangle1.setSpeedX(speed);
-            mRectangle1.setSpeedY(speed);
-
-               /* mRectangle2.setSpeedX(speed2);
-                mRectangle2.setSpeedY(speed2);
-
-                mRectangle3.setSpeedX(speed3);
-                mRectangle3.setSpeedY(speed3);
+            float speed2 = dbmArray[1] * 5 + 1;
+            mRectangle2.setSpeedX(speed2);
+            mRectangle2.setSpeedY(speed2);
+            speed2 = test < mRandomCount / 2 ? -speed2 : speed2;
+            mRectangle2.setDegreeSpeed(1 * (speed2 / Math.abs(speed2)));
+            mRectangle2.move();
+            mRectangle2.draw(canvas);
 
 
-                mRectangle4.setSpeedX(speed3);
-                mRectangle4.setSpeedY(speed3);
+            float speed3 = dbmArray[2] * 5 + 1;
+            mRectangle3.setSpeedX(speed3);
+            mRectangle3.setSpeedY(speed3);
+            speed3 = test < mRandomCount / 2 ? -speed3 : speed3;
+            mRectangle3.setDegreeSpeed(2 * (speed3 / Math.abs(speed3)));
+            mRectangle3.move();
+            mRectangle3.draw(canvas);
 
+            float speed4 = dbmArray[3] * 5 + 1;
+            mRectangle4.setSpeedX(speed4);
+            mRectangle4.setSpeedY(speed4);
+            speed4 = test < mRandomCount / 2 ? -speed4 : speed4;
+            mRectangle4.setDegreeSpeed(4 * (speed4 / Math.abs(speed4)));
+            mRectangle4.move();
+            mRectangle4.draw(canvas);
 
-                mRectangle5.setSpeedX(speed3);
+                /*mRectangle5.setSpeedX(speed3);
                 mRectangle5.setSpeedY(speed3);
 
 
                 mRectangle6.setSpeedX(speed3);
                 mRectangle6.setSpeedY(speed3);*/
-//            Log.e(TAG, "onDraw: " + "speed1: " + speed + "  dbmArray: " + dbmArray[0] + "  test: " + test + "  " + (speed / Math.abs(speed)) +  "  " + mRectangle1.getDegreeSpeed());
-
-            mRectangle1.move();
-            mRectangle1.draw(canvas);
+//            Log.e(TAG, "onDraw: " + "speed1: " + speed1 + "speed2: " + speed2+ "speed3: " + speed3+ "speed4: " + speed4 + "  dbmArray: " + dbmArray[0] + "  test: " + test + "  " + (speed1 / Math.abs(speed1)) +  "  " + mRectangle1.getDegreeSpeed());
 
 
-          /*  mRectangle2.move();
-            mRectangle2.draw(canvas);
 
-            mRectangle3.move();
-            mRectangle3.draw(canvas);
-            mRectangle4.move();
-            mRectangle4.draw(canvas);
-            mRectangle5.move();
+
+
+            /* mRectangle5.move();
             mRectangle5.draw(canvas);
             mRectangle6.move();
             mRectangle6.draw(canvas);*/

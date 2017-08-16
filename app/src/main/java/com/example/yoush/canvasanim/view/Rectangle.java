@@ -3,7 +3,6 @@ package com.example.yoush.canvasanim.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.View;
 
 /**
@@ -44,6 +43,9 @@ public class Rectangle extends View {
 
     private DrawView mDrawView;
     private Paint mPaint;
+
+    private float mOriginX;
+    private float mOriginY;
 
 
     private int mFPS = 0;         // the value to show
@@ -124,8 +126,6 @@ public class Rectangle extends View {
             mDegree = 0;
         }
         mDegree = mDegree + degree;
-        Log.e(TAG, "moveTo: " + mDegree + "  " + degree);
-//        Log.e(TAG, "moveTo: " + "startX: " + mStartX + "  startY: " + mStartY + " goX: " + goX + " goY: " + goY);
 
     }
 
@@ -223,5 +223,21 @@ public class Rectangle extends View {
 
     public void setDegreeSpeed(float degreeSpeed) {
         mDegreeSpeed = degreeSpeed;
+    }
+
+    public float getOriginX() {
+        return mOriginX;
+    }
+
+    public void setOriginX(float originX) {
+        mOriginX = originX;
+    }
+
+    public float getOriginY() {
+        return mOriginY;
+    }
+
+    public void setOriginY(float originY) {
+        mOriginY = originY;
     }
 }
