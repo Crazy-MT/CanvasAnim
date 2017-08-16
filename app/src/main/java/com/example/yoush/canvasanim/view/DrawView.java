@@ -2,7 +2,6 @@ package com.example.yoush.canvasanim.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -17,25 +16,17 @@ import java.util.Random;
 public class DrawView extends View {
 
     private static final String TAG = "DrawView";
-    private Rectangle mRectangle1;
-    private Rectangle mRectangle2;
-    private Rectangle mRectangle3;
-    private Rectangle mRectangle4;
-    private Rectangle mRectangle5;
-    private Rectangle mRectangle6;
+
+    private Rectangle[] mRectangles = new Rectangle[10];
     public int width;
     public int height;
     private boolean isRunning;
-    private float mAverage = 0;
 
     private Context mContext;
 
     private byte[] mBytes;
 
-    private int max = 0, min = 0;
-
-    private Paint mPaint;
-    private int test = 0;
+    private int mRandomChange = 0;
 
     private float[] dbmArray = new float[4];
 
@@ -65,9 +56,6 @@ public class DrawView extends View {
         super(context, attrs, defStyleAttr);
         mContext = context;
         isRunning = true;
-        mPaint = new Paint();
-        mPaint.setAntiAlias(true);// 消除锯齿
-        mPaint.setStrokeWidth(10f);
     }
 
     @Override
@@ -75,48 +63,63 @@ public class DrawView extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         width = getMeasuredWidth();
         height = getMeasuredHeight();
-
-        mRectangle1 = createF(mContext, width / 2, height / 2, 7, 7, 200);
-        mRectangle2 = createF(mContext, width / 2 + 400, height / 2, 1, 1, 200);
-        mRectangle3 = createF(mContext, width / 2 - 200, height / 2, 5, 1, 200);
-
-        mRectangle4 = createF(mContext, width / 2 - 400, height / 2, 7, 7, 200);
-        mRectangle5 = createF(mContext, width / 2 + 200, height / 2, 1, 1, 200);
-        mRectangle6 = createF(mContext, width / 2 - 400, height / 2, 5, 1, 200);
-
-        mRectangle1.setARGB(255, 121, 121, 121);
-        mRectangle2.setARGB(255, 121, 121, 121);
-        mRectangle3.setARGB(255, 121, 121, 121);
-        mRectangle4.setARGB(255, 121, 121, 121);
-        mRectangle5.setARGB(255, 121, 121, 121);
-        mRectangle6.setARGB(255, 121, 121, 121);
-
-        mRectangle1.setDegree(30);
-        mRectangle2.setDegree(10);
-        mRectangle3.setDegree(60);
-        mRectangle4.setDegree(30);
-        mRectangle5.setDegree(10);
-        mRectangle6.setDegree(60);
-
-
-        mRectangle1.setDegreeSpeed(3);
-        mRectangle2.setDegreeSpeed(-1);
-        mRectangle3.setDegreeSpeed(-2);
-        mRectangle4.setDegreeSpeed(-3);
-        mRectangle5.setDegreeSpeed(-2);
-        mRectangle6.setDegreeSpeed(-1);
+        int distanceWidth = width / 10;
+        int distanceHeight = height / 10;
+        mRectangles[0] = createF(mContext, width / 2 + distanceWidth, height / 2, 7, 7, 200, 10);
+        mRectangles[1] = createF(mContext, width / 2 + distanceWidth * 2, height / 2, 1, 1, 200, -20);
+        mRectangles[2] = createF(mContext, width / 2 + distanceWidth * 3, height / 2, 5, 1, 200, 30);
+        mRectangles[3] = createF(mContext, width / 2 + distanceWidth * 4, height / 2, 7, 7, 200, 40);
+        mRectangles[4] = createF(mContext, width / 2 + distanceWidth * 5, height / 2, 1, 1, 200, -50);
+        mRectangles[5] = createF(mContext, width / 2 - distanceWidth, height / 2, 5, 1, 200, 60);
+        mRectangles[6] = createF(mContext, width / 2 - distanceWidth * 2, height / 2, 5, 1, 200, -70);
+        mRectangles[7] = createF(mContext, width / 2 - distanceWidth * 3, height / 2, 7, 7, 200, 80);
+        mRectangles[8] = createF(mContext, width / 2 - distanceWidth * 4, height / 2, 1, 1, 200, 90);
+        mRectangles[9] = createF(mContext, width / 2 - distanceWidth * 5, height / 2, 5, 1, 200, 100);
     }
 
-    public byte[] getBytes() {
-        return mBytes;
+    private void drawRectangleView(Canvas canvas, int randomChange, int randomCount, float dbm, Rectangle rectangle, float ratio, int degreeSpeed) {
+        float speedX = dbm * ratio + 1;
+        float speedY = speedX;
+        rectangle.setSpeedX(speedX);
+        rectangle.setSpeedY(speedY);
+        speedX = randomChange < randomCount / 2 ? -speedX : speedX;
+        rectangle.setDegreeSpeed(degreeSpeed * (speedX / Math.abs(speedX)));
+        rectangle.move();
+        rectangle.draw(canvas);
+
     }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (mBytes == null) {
+            return;
+        }
+
+        if (isRunning) {
+            invalidate();
+
+            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[0], 10, 3);
+            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[1], 10, 1);
+            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[2], 10, 2);
+            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[3], 10, -2);
+            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[4], 10, -1);
+            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[5], 10, 3);
+            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[6], 10, -3);
+            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[7], 10, 3);
+            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[8], 10, -3);
+            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[9], 10, 3);
+
+        }
+        //super.onDraw(canvas);
+    }
+
 
     public void setBytes(byte[] bytes) {
         mBytes = bytes;
 
-        test++;
-        if (test > mRandomCount){
-            test = 0;
+        mRandomChange++;
+        if (mRandomChange > mRandomCount) {
+            mRandomChange = 0;
             mRandomCount = new Random().nextInt(10);
         }
         dataReceivedImpl(mBytes, 4);
@@ -125,9 +128,7 @@ public class DrawView extends View {
     }
 
     private void dataReceivedImpl(byte[] bytes, int layersCount) {
-
-
-        // calculate dBs and amplitudes
+        // calculate dBs
         int dataSize = bytes.length / 2 - 1;
         if (dbs == null || dbs.length != dataSize) {
             dbs = new float[dataSize];
@@ -148,10 +149,8 @@ public class DrawView extends View {
         Log.e(TAG, "dataReceivedImpl: " + dbmArray[0]);
     }
 
-
-    private Rectangle createF(Context context, int x, int y, int speedX, int speedY, int length) {
+    private Rectangle createF(Context context, int x, int y, int speedX, int speedY, int length, float degree) {
         Rectangle mRectangle = new Rectangle(context, this);
-
         mRectangle.setX(x);
         mRectangle.setY(y);
         mRectangle.setLength(length);
@@ -159,76 +158,8 @@ public class DrawView extends View {
         mRectangle.setSpeedY(speedY);
         mRectangle.setOriginX(x);
         mRectangle.setOriginY(y);
+        mRectangle.setDegree(degree);
         return mRectangle;
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-
-
-        if (mBytes == null) {
-            return;
-        }
-
-        if (isRunning) {
-            invalidate();
-
-            float speed1 =  dbmArray[0] * 10 + 1;
-            mRectangle1.setSpeedX(speed1);
-            mRectangle1.setSpeedY(speed1);
-            speed1 = test < mRandomCount/2 ? -speed1 : speed1;
-            mRectangle1.setDegreeSpeed(3 * (speed1 / Math.abs(speed1)));
-            mRectangle1.move();
-            mRectangle1.draw(canvas);
-            Log.e(TAG, "onDraw: " + speed1);
-
-            float speed2 = dbmArray[0] * 5 + 1;
-            mRectangle2.setSpeedX(speed2);
-            mRectangle2.setSpeedY(speed2);
-            speed2 = test < mRandomCount / 2 ? -speed2 : speed2;
-            mRectangle2.setDegreeSpeed(1 * (speed2 / Math.abs(speed2)));
-            mRectangle2.move();
-            mRectangle2.draw(canvas);
-
-
-            float speed3 = dbmArray[0] * 5 + 1;
-            mRectangle3.setSpeedX(speed3);
-            mRectangle3.setSpeedY(speed3);
-            speed3 = test < mRandomCount / 2 ? -speed3 : speed3;
-            mRectangle3.setDegreeSpeed(2 * (speed3 / Math.abs(speed3)));
-            mRectangle3.move();
-            mRectangle3.draw(canvas);
-
-            float speed4 = dbmArray[0] * 5 + 1;
-            mRectangle4.setSpeedX(speed4);
-            mRectangle4.setSpeedY(speed4);
-            speed4 = test < mRandomCount / 2 ? -speed4 : speed4;
-            mRectangle4.setDegreeSpeed(4 * (speed4 / Math.abs(speed4)));
-            mRectangle4.move();
-            mRectangle4.draw(canvas);
-
-                /*mRectangle5.setSpeedX(speed3);
-                mRectangle5.setSpeedY(speed3);
-
-
-                mRectangle6.setSpeedX(speed3);
-                mRectangle6.setSpeedY(speed3);*/
-//            Log.e(TAG, "onDraw: " + "speed1: " + speed1 + "speed2: " + speed2+ "speed3: " + speed3+ "speed4: " + speed4 + "  dbmArray: " + dbmArray[0] + "  test: " + test + "  " + (speed1 / Math.abs(speed1)) +  "  " + mRectangle1.getDegreeSpeed());
-
-
-
-
-
-            /* mRectangle5.move();
-            mRectangle5.draw(canvas);
-            mRectangle6.move();
-            mRectangle6.draw(canvas);*/
-        }
-
-
-        // postInvalidate() 子线程请求调用 onDraw() ，系统自动调用，不允许手动调用。
-        // invalidate(); 主线程请求调用 onDraw()
-        //super.onDraw(canvas);
     }
 
     public boolean isRunning() {
@@ -239,5 +170,7 @@ public class DrawView extends View {
         this.isRunning = isRunning;
     }
 
-
+    public byte[] getBytes() {
+        return mBytes;
+    }
 }

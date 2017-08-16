@@ -46,7 +46,7 @@ public class Rectangle extends View {
 
     private float mOriginX;
     private float mOriginY;
-
+    private float mDistance = 200;
 
     private int mFPS = 0;         // the value to show
     private int mFPSCounter = 0;  // the value to count
@@ -58,6 +58,7 @@ public class Rectangle extends View {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);// 消除锯齿
         mPaint.setStrokeWidth(10f);
+        mPaint.setARGB(255, 121, 121, 121);
     }
 
 
@@ -92,11 +93,11 @@ public class Rectangle extends View {
 
     private void moveTo(float goX, float goY, float degree) {
 
-        int width = (int) (mOriginX + 300);
-        int height = (int) (mOriginY + 300);
+        int width = (int) (mOriginX + mDistance);
+        int height = (int) (mOriginY + mDistance);
 
-        int x = (int) (mOriginX - 300);
-        int y = (int) (mOriginY - 300);
+        int x = (int) (mOriginX - mDistance);
+        int y = (int) (mOriginY - mDistance);
 
         if (mEndX > width || mStartX > width) {
             goRight = false;
