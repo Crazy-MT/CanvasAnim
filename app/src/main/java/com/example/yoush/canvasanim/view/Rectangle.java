@@ -92,11 +92,11 @@ public class Rectangle extends View {
 
     private void moveTo(float goX, float goY, float degree) {
 
-        int width = (int) (mDrawView.width * 1.2f);
-        int height = (int) (mDrawView.height * 1.2f);
+        int width = (int) (mOriginX + 300);
+        int height = (int) (mOriginY + 300);
 
-        int x = -(int) (mDrawView.width * 0.1);
-        int y = -(int) (mDrawView.height * 0.1);
+        int x = (int) (mOriginX - 300);
+        int y = (int) (mOriginY - 300);
 
         if (mEndX > width || mStartX > width) {
             goRight = false;

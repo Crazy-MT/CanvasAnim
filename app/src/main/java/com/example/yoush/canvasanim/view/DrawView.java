@@ -76,13 +76,13 @@ public class DrawView extends View {
         width = getMeasuredWidth();
         height = getMeasuredHeight();
 
-        mRectangle1 = createF(mContext, 500, 500, 7, 7, 200);
-        mRectangle2 = createF(mContext, 500, 500, 1, 1, 200);
-        mRectangle3 = createF(mContext, 200, 200, 5, 1, 200);
+        mRectangle1 = createF(mContext, width / 2, height / 2, 7, 7, 200);
+        mRectangle2 = createF(mContext, width / 2 + 400, height / 2, 1, 1, 200);
+        mRectangle3 = createF(mContext, width / 2 - 200, height / 2, 5, 1, 200);
 
-        mRectangle4 = createF(mContext, 567, 345, 7, 7, 200);
-        mRectangle5 = createF(mContext, 600, 600, 1, 1, 200);
-        mRectangle6 = createF(mContext, 700, 700, 5, 1, 200);
+        mRectangle4 = createF(mContext, width / 2 - 400, height / 2, 7, 7, 200);
+        mRectangle5 = createF(mContext, width / 2 + 200, height / 2, 1, 1, 200);
+        mRectangle6 = createF(mContext, width / 2 - 400, height / 2, 5, 1, 200);
 
         mRectangle1.setARGB(255, 121, 121, 121);
         mRectangle2.setARGB(255, 121, 121, 121);
@@ -182,7 +182,7 @@ public class DrawView extends View {
             mRectangle1.draw(canvas);
             Log.e(TAG, "onDraw: " + speed1);
 
-            float speed2 = dbmArray[1] * 5 + 1;
+            float speed2 = dbmArray[0] * 5 + 1;
             mRectangle2.setSpeedX(speed2);
             mRectangle2.setSpeedY(speed2);
             speed2 = test < mRandomCount / 2 ? -speed2 : speed2;
@@ -191,7 +191,7 @@ public class DrawView extends View {
             mRectangle2.draw(canvas);
 
 
-            float speed3 = dbmArray[2] * 5 + 1;
+            float speed3 = dbmArray[0] * 5 + 1;
             mRectangle3.setSpeedX(speed3);
             mRectangle3.setSpeedY(speed3);
             speed3 = test < mRandomCount / 2 ? -speed3 : speed3;
@@ -199,7 +199,7 @@ public class DrawView extends View {
             mRectangle3.move();
             mRectangle3.draw(canvas);
 
-            float speed4 = dbmArray[3] * 5 + 1;
+            float speed4 = dbmArray[0] * 5 + 1;
             mRectangle4.setSpeedX(speed4);
             mRectangle4.setSpeedY(speed4);
             speed4 = test < mRandomCount / 2 ? -speed4 : speed4;

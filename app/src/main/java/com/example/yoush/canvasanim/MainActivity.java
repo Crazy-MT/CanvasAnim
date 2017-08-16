@@ -62,13 +62,6 @@ public class MainActivity extends AppCompatActivity {
                 new Visualizer.OnDataCaptureListener() {
                     public void onWaveFormDataCapture(Visualizer visualizer,
                                                       byte[] bytes, int samplingRate) {
-                        // TODO: 2017/8/11 声音文件
-                        /*for (int b : bytes){
-                            min = min < b ? min : b;
-                            max = max > b ? max : b;
-                            Log.e(TAG, "onWaveFormDataCapture: " + b + "  " + min + "  " + max);
-                        }*/
-
                         /*if (SystemClock.uptimeMillis() - mFPSTime > 1000) {
                             mFPSTime = SystemClock.uptimeMillis();
                             mFPS = mFPSCounter;
@@ -76,15 +69,6 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             mFPSCounter++;
                         }*/
-
-                        // 128 , 每秒 2 次采样，长度 128
-/*
-                        for (int b : bytes){
-//                            Log.e(TAG, "onWaveFormDataCapture: " + b);
-                        }
-*/
-                        //Log.e(TAG, "onWaveFormDataCapture: " + mFPS + "  " + bytes.length  );
-
 //                        mDrawView.setBytes(bytes);
                     }
 
@@ -100,10 +84,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (isFinishing() && mMediaPlayer != null) {
+        if ( mMediaPlayer != null) {
             mVisualizer.release();
             mMediaPlayer.release();
             mMediaPlayer = null;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mMediaPlayer == null){
+            initVisualizer();
         }
     }
 
