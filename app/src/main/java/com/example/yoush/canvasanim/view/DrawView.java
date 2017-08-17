@@ -104,10 +104,10 @@ public class DrawView extends View {
             drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[3], 10, -2);
             drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[4], 10, -1);
             drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[5], 10, 3);
-            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[6], 10, -3);
-            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[7], 10, 3);
+            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[6], 10, 2);
+            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[7], 10, -1);
             drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[8], 10, -3);
-            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[9], 10, 3);
+            drawRectangleView(canvas, mRandomChange, mRandomCount, dbmArray[0], mRectangles[9], 10, 2);
 
         }
         //super.onDraw(canvas);

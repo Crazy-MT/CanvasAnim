@@ -42,20 +42,21 @@ public class MainActivity extends AppCompatActivity {
 //        mMediaPlayer.setDataSource(this,);
         prepareVisualizer();
 
-        mMediaPlayer.start();
+//        mMediaPlayer.start();
         mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 mVisualizer.setEnabled(true);
-                mMediaPlayer.start();
+//                mMediaPlayer.start();
             }
         });
     }
 
     private static final String TAG = "MainActivity";
     private void prepareVisualizer() {
-        mVisualizer = new Visualizer(mMediaPlayer.getAudioSessionId());
-        //mVisualizer = new Visualizer(0);
+//        mVisualizer = new Visualizer(mMediaPlayer.getAudioSessionId());
+        mVisualizer = new Visualizer(0);
+        mVisualizer.setEnabled(false);
         mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
 //        mVisualizer.setMeasurementMode(Visualizer.MEASUREMENT_MODE_PEAK_RMS);
 

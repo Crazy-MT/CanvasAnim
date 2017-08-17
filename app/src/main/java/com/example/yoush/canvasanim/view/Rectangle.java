@@ -117,17 +117,16 @@ public class Rectangle extends View {
             goY = Math.abs(goY);
         }
 
-
         mStartX = goRight ? (mStartX + goX) : (mStartX - goX);
         mStartY = goDown ? (mStartY + goY) : (mStartY - goY);
-        if (mDegree >= 360){
-            mDegree = 0;
-        }
-        if (mDegree < -360){
-            mDegree = 0;
-        }
-        mDegree = mDegree + degree;
 
+        mDegree = mDegree + degree;
+        if (mDegree >= 360) {
+            mDegree = 0;
+        }
+        if (mDegree < -360) {
+            mDegree = 0;
+        }
     }
 
     /***
@@ -142,17 +141,14 @@ public class Rectangle extends View {
         points[0] = toX;
         points[1] = toY;
 
-//        Log.e(TAG, "calculatePoint: " + angle);
         if (angle < 0) {
             angle = 360 + angle;
-//            Log.e(TAG, "calculatePoint: " + angle);
         }
 
         if (angle <= 90f && angle >= 0) {
             points[2] = (float) Math.sin(angle * Math.PI / 180) * mLength + toX;
             points[3] = -(float) Math.cos(angle * Math.PI / 180) * mLength + toY;
         } else if (angle <= 180f) {
-
             points[2] = (float) Math.cos((angle - 90) * Math.PI / 180) * mLength + toX;
             points[3] = (float) Math.sin((angle - 90) * Math.PI / 180) * mLength + toY;
         } else if (angle <= 270f) {
