@@ -3,8 +3,8 @@ package com.example.yoush.canvasanim.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 import java.util.Random;
 
@@ -56,25 +56,30 @@ public class DrawView extends View {
         super(context, attrs, defStyleAttr);
         mContext = context;
         isRunning = true;
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                width = getMeasuredWidth();
+                height = getMeasuredHeight();
+                setRectangles();
+                getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        width = getMeasuredWidth();
-        height = getMeasuredHeight();
+    private void setRectangles() {
         int distanceWidth = width / 10;
         int distanceHeight = height / 10;
-        mRectangles[0] = createF(mContext, width / 2 + distanceWidth, height / 2, 7, 7, 200, 10);
-        mRectangles[1] = createF(mContext, width / 2 + distanceWidth * 2, height / 2, 1, 1, 200, -20);
-        mRectangles[2] = createF(mContext, width / 2 + distanceWidth * 3, height / 2, 5, 1, 200, 30);
-        mRectangles[3] = createF(mContext, width / 2 + distanceWidth * 4, height / 2, 7, 7, 200, 40);
-        mRectangles[4] = createF(mContext, width / 2 + distanceWidth * 5, height / 2, 1, 1, 200, -50);
-        mRectangles[5] = createF(mContext, width / 2 - distanceWidth, height / 2, 5, 1, 200, 60);
-        mRectangles[6] = createF(mContext, width / 2 - distanceWidth * 2, height / 2, 5, 1, 200, -70);
-        mRectangles[7] = createF(mContext, width / 2 - distanceWidth * 3, height / 2, 7, 7, 200, 80);
-        mRectangles[8] = createF(mContext, width / 2 - distanceWidth * 4, height / 2, 1, 1, 200, 90);
-        mRectangles[9] = createF(mContext, width / 2 - distanceWidth * 5, height / 2, 5, 1, 200, 100);
+        mRectangles[0] = new Rectangle(mContext,DrawView.this, width / 2 + distanceWidth, height / 2, 7, 7, 200, 10);
+        mRectangles[1] = new Rectangle(mContext,DrawView.this, width / 2 + distanceWidth * 2, height / 2, 1, 1, 200, -20);
+        mRectangles[2] = new Rectangle(mContext,DrawView.this, width / 2 + distanceWidth * 3, height / 2, 5, 1, 200, 30);
+        mRectangles[3] = new Rectangle(mContext,DrawView.this, width / 2 + distanceWidth * 4, height / 2, 7, 7, 200, 40);
+        mRectangles[4] = new Rectangle(mContext,DrawView.this, width / 2 + distanceWidth * 5, height / 2, 1, 1, 200, -50);
+        mRectangles[5] = new Rectangle(mContext,DrawView.this, width / 2 - distanceWidth, height / 2, 5, 1, 200, 60);
+        mRectangles[6] = new Rectangle(mContext,DrawView.this, width / 2 - distanceWidth * 2, height / 2, 5, 1, 200, -70);
+        mRectangles[7] = new Rectangle(mContext,DrawView.this, width / 2 - distanceWidth * 3, height / 2, 7, 7, 200, 80);
+        mRectangles[8] = new Rectangle(mContext,DrawView.this, width / 2 - distanceWidth * 4, height / 2, 1, 1, 200, 90);
+        mRectangles[9] = new Rectangle(mContext,DrawView.this, width / 2 - distanceWidth * 5, height / 2, 5, 1, 200, 100);
     }
 
     private void drawRectangleView(Canvas canvas, int randomChange, int randomCount, float dbm, Rectangle rectangle, float ratio, int degreeSpeed) {
@@ -86,7 +91,6 @@ public class DrawView extends View {
         rectangle.setDegreeSpeed(degreeSpeed * (speedX / Math.abs(speedX)));
         rectangle.move();
         rectangle.draw(canvas);
-
     }
 
     @Override
@@ -145,21 +149,6 @@ public class DrawView extends View {
             float db = dbs[index];
             dbmArray[i] = db / MAX_DB_VALUE;
         }
-
-        Log.e(TAG, "dataReceivedImpl: " + dbmArray[0]);
-    }
-
-    private Rectangle createF(Context context, int x, int y, int speedX, int speedY, int length, float degree) {
-        Rectangle mRectangle = new Rectangle(context, this);
-        mRectangle.setX(x);
-        mRectangle.setY(y);
-        mRectangle.setLength(length);
-        mRectangle.setSpeedX(speedX);
-        mRectangle.setSpeedY(speedY);
-        mRectangle.setOriginX(x);
-        mRectangle.setOriginY(y);
-        mRectangle.setDegree(degree);
-        return mRectangle;
     }
 
     public boolean isRunning() {

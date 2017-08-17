@@ -51,7 +51,6 @@ public class Rectangle extends View {
     private int mFPS = 0;         // the value to show
     private int mFPSCounter = 0;  // the value to count
     private long mFPSTime = 0;     // last update time
-
     public Rectangle(Context context, DrawView drawView) {
         super(context);
         mDrawView = drawView;
@@ -59,6 +58,22 @@ public class Rectangle extends View {
         mPaint.setAntiAlias(true);// 消除锯齿
         mPaint.setStrokeWidth(10f);
         mPaint.setARGB(255, 121, 121, 121);
+    }
+    public Rectangle(Context context, DrawView drawView, int x, int y, int speedX, int speedY, int length, float degree) {
+        super(context);
+        mDrawView = drawView;
+        mPaint = new Paint();
+        mPaint.setAntiAlias(true);// 消除锯齿
+        mPaint.setStrokeWidth(10f);
+        mPaint.setARGB(255, 121, 121, 121);
+        mStartX = x;
+        mStartY = y;
+        mOriginX = x;
+        mOriginY = y;
+        mSpeedX = speedX;
+        mSpeedY = speedY;
+        mLength = length;
+        mDegree = degree;
     }
 
 

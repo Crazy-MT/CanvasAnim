@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initVisualizer() {
         mMediaPlayer = MediaPlayer.create(this, R.raw.starsky);
-//        mMediaPlayer.setDataSource(this,);
         prepareVisualizer();
 
 //        mMediaPlayer.start();
