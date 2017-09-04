@@ -3,7 +3,7 @@ package com.example.yoush.canvasanim.view;
 /**
  * Helpful utils.
  */
-class Utils {
+public class Utils {
 	private Utils() {}
 
 	/**
@@ -11,7 +11,7 @@ class Utils {
 	 * @param squareMag square of magnitude
 	 * @return decibels
 	 */
-	static float magnitudeToDb(float squareMag) {
+	public static float magnitudeToDb(float squareMag) {
 		if (squareMag == 0)
 			return 0;
 		return (float) (20 * Math.log10(squareMag));
